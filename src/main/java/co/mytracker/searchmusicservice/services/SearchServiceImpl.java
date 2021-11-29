@@ -116,9 +116,7 @@ public class SearchServiceImpl implements SearchService {
         spotifyApi.setAccessToken(clientCredentials.getAccessToken());
     }
 
-    private static <T> Predicate<T> distinctByKey(
-            Function<? super T, ?> keyExtractor) {
-
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
