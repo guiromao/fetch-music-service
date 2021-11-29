@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public class ArtistConverter {
 
-    public static Artist spotifyArtistToArtist(se.michaelthelin.spotify.model_objects.specification.Artist spotifyArtist) {
+    public static Artist convertToAppArtist(se.michaelthelin.spotify.model_objects.specification.Artist spotifyArtist) {
         return new Artist(spotifyArtist.getId(),
                 spotifyArtist.getName(),
                 spotifyArtist.getUri(),
@@ -18,9 +18,9 @@ public class ArtistConverter {
                 spotifyArtist.getFollowers().getTotal());
     }
 
-    public static List<Artist> listSpotifyArtistToListArtist(Paging<se.michaelthelin.spotify.model_objects.specification.Artist> listSpotifyArtist) {
+    public static List<Artist> convertToAppArtistList(Paging<se.michaelthelin.spotify.model_objects.specification.Artist> listSpotifyArtist) {
         return Stream.of(listSpotifyArtist.getItems())
-                .map(spotifyArtist -> spotifyArtistToArtist(spotifyArtist))
+                .map(spotifyArtist -> convertToAppArtist(spotifyArtist))
                 .collect(Collectors.toList());
     }
 

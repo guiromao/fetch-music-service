@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class AlbumConverter {
 
-    public static Album spotifyAlbumToAlbum(AlbumSimplified spotifyAlbum) {
+    public static Album convertToAppAlbum(AlbumSimplified spotifyAlbum) {
         return new Album(spotifyAlbum.getId(),
                 spotifyAlbum.getName(),
                 spotifyAlbum.getAlbumType().getType(),
@@ -20,9 +20,9 @@ public class AlbumConverter {
                 spotifyAlbum.getImages());
     }
 
-    public static List<Album> listSpotifyAlbumToListAlbum(Paging<AlbumSimplified> spotifyAlbums) {
+    public static List<Album> convertToAppAlbumList(Paging<AlbumSimplified> spotifyAlbums) {
         return Stream.of(spotifyAlbums.getItems())
-                .map(spotifyAlbum -> spotifyAlbumToAlbum(spotifyAlbum))
+                .map(spotifyAlbum -> convertToAppAlbum(spotifyAlbum))
                 .collect(Collectors.toList());
     }
 

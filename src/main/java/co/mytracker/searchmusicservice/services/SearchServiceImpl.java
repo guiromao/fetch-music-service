@@ -1,10 +1,13 @@
 package co.mytracker.searchmusicservice.services;
 
-import co.mytracker.searchmusicservice.converters.AlbumConverter;
-import co.mytracker.searchmusicservice.converters.ArtistConverter;
+import static co.mytracker.searchmusicservice.converters.AlbumConverter.convertToAppAlbumList;
+import static co.mytracker.searchmusicservice.converters.ArtistConverter.convertToAppArtistList;
+
 import co.mytracker.searchmusicservice.models.Album;
 import co.mytracker.searchmusicservice.models.Artist;
-import co.mytracker.searchmusicservice.utils.DateUtils;
+
+import static co.mytracker.searchmusicservice.utils.DateUtils.localDateOf;
+
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -55,7 +58,7 @@ public class SearchServiceImpl implements SearchService {
         try {
             Paging<se.michaelthelin.spotify.model_objects.specification.Artist> artists = searchRequest.execute();
 
-            return ArtistConverter.listSpotifyArtistToListArtist(artists);
+            return convertToAppArtistList(artists);
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             throw new RuntimeException("Couldn't retrieve artists for the name provided: " + e);
         }
@@ -71,7 +74,7 @@ public class SearchServiceImpl implements SearchService {
 
         try {
             Paging<AlbumSimplified> spotifyAlbums = searchAlbumsRequest.execute();
-            List<Album> albums = AlbumConverter.listSpotifyAlbumToListAlbum(spotifyAlbums);
+            List<Album> albums = convertToAppAlbumList(spotifyAlbums);
 
             return selectRecentAlbums(albums);
         } catch (IOException | SpotifyWebApiException | ParseException e) {
@@ -81,13 +84,14 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * Fetching albums that have been released within the last 30 days
+     *
      * @param albums albums retrieved from the Spotify API
      * @return recent albums
      */
     private List<Album> selectRecentAlbums(List<Album> albums) {
         return albums.stream()
                 .filter(album -> LocalDate.now().minusDays(THIRTY_DAYS)
-                        .isBefore(DateUtils.localDateOf(album.getReleaseDate())))
+                        .isBefore(localDateOf(album.getReleaseDate())))
                 .filter(distinctByAlbumName(a -> a.getName()))
                 .collect(Collectors.toList());
     }
