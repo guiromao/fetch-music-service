@@ -73,7 +73,7 @@ public class SearchServiceImpl implements SearchService {
             Paging<AlbumSimplified> spotifyAlbums = searchAlbumsRequest.execute();
             List<Album> albums = AlbumConverter.listSpotifyAlbumToListAlbum(spotifyAlbums);
 
-            return fetchRecentAlbums(albums);
+            return selectRecentAlbums(albums);
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             throw new RuntimeException("Couldn't fetch albums for the artist name provided: " + e);
         }
@@ -84,7 +84,7 @@ public class SearchServiceImpl implements SearchService {
      * @param albums albums retrieved from the Spotify API
      * @return recent albums
      */
-    private List<Album> fetchRecentAlbums(List<Album> albums) {
+    private List<Album> selectRecentAlbums(List<Album> albums) {
         return albums.stream()
                 .filter(album -> LocalDate.now().minusDays(THIRTY_DAYS)
                         .isBefore(DateUtils.localDateOf(album.getReleaseDate())))
@@ -116,7 +116,7 @@ public class SearchServiceImpl implements SearchService {
         spotifyApi.setAccessToken(clientCredentials.getAccessToken());
     }
 
-    private static <T> Predicate<T> distinctByAlbumName(Function<? super T, ?> keyExtractor) {
+    private <T> Predicate<T> distinctByAlbumName(Function<? super T, ?> keyExtractor) {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
