@@ -10,7 +10,9 @@ import java.util.stream.Stream;
 public class ArtistConverter {
 
     public static Artist spotifyArtistToArtist(se.michaelthelin.spotify.model_objects.specification.Artist spotifyArtist) {
-        return new Artist(spotifyArtist.getId(), spotifyArtist.getName());
+        return new Artist(spotifyArtist.getId(),
+                spotifyArtist.getName(),
+                spotifyArtist.getUri());
     }
 
     public static List<Artist> listSpotifyArtistToListArtist(Paging<se.michaelthelin.spotify.model_objects.specification.Artist> listSpotifyArtist) {
