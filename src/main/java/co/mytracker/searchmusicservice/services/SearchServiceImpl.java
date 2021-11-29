@@ -23,6 +23,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,7 +86,9 @@ public class SearchServiceImpl implements SearchService {
      */
     private List<Album> fetchRecentAlbums(List<Album> albums) {
         return albums.stream()
-                .filter(album -> LocalDate.now().minusDays(THIRTY_DAYS).isBefore(DateUtils.localDateOf(album.getReleaseDate())))
+                .filter(album -> LocalDate.now().minusDays(THIRTY_DAYS)
+                        .isBefore(DateUtils.localDateOf(album.getReleaseDate())))
+                .filter(distinctByKey(a -> a.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -109,5 +115,12 @@ public class SearchServiceImpl implements SearchService {
         ClientCredentials clientCredentials = clientCredentialsRequest.execute();
         spotifyApi.setAccessToken(clientCredentials.getAccessToken());
     }
-    
+
+    private static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
 }
