@@ -14,8 +14,10 @@ public class AlbumConverter {
     public static Album spotifyAlbumToAlbum(AlbumSimplified spotifyAlbum) {
         return new Album(spotifyAlbum.getId(),
                 spotifyAlbum.getName(),
+                spotifyAlbum.getAlbumType().getType(),
                 DateUtils.stringToDate(spotifyAlbum.getReleaseDate()),
-                spotifyAlbum.getUri());
+                spotifyAlbum.getUri(),
+                spotifyAlbum.getImages());
     }
 
     public static List<Album> listSpotifyAlbumToListAlbum(Paging<AlbumSimplified> spotifyAlbums) {

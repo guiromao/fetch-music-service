@@ -12,7 +12,10 @@ public class ArtistConverter {
     public static Artist spotifyArtistToArtist(se.michaelthelin.spotify.model_objects.specification.Artist spotifyArtist) {
         return new Artist(spotifyArtist.getId(),
                 spotifyArtist.getName(),
-                spotifyArtist.getUri());
+                spotifyArtist.getUri(),
+                spotifyArtist.getImages(),
+                spotifyArtist.getPopularity(),
+                spotifyArtist.getFollowers().getTotal());
     }
 
     public static List<Artist> listSpotifyArtistToListArtist(Paging<se.michaelthelin.spotify.model_objects.specification.Artist> listSpotifyArtist) {
