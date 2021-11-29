@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 public class SearchServiceImpl implements SearchService {
 
     private static final int THIRTY_DAYS = 30;
+    private static final int NUMBER_RESULTS = 5;
 
     private SpotifyApi spotifyApi;
 
@@ -44,7 +45,7 @@ public class SearchServiceImpl implements SearchService {
         refreshSpotifyApi();
 
         SearchArtistsRequest searchRequest = spotifyApi.searchArtists(artistName)
-                .limit(10)
+                .limit(NUMBER_RESULTS)
                 .build();
 
         try {
@@ -61,7 +62,7 @@ public class SearchServiceImpl implements SearchService {
         refreshSpotifyApi();
 
         SearchAlbumsRequest searchAlbumsRequest = spotifyApi.searchAlbums(artistName)
-                .limit(5)
+                .limit(NUMBER_RESULTS)
                 .build();
 
         try {
@@ -88,18 +89,25 @@ public class SearchServiceImpl implements SearchService {
     //Getting a new access token for Spotify API requests
     private void refreshSpotifyApi() {
         try {
-            spotifyApi = new SpotifyApi.Builder()
-                    .setClientId(clientId)
-                    .setClientSecret(clientSecret)
-                    .setRedirectUri(new URI("http://mytracker.co"))
-                    .build();
-
-            ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
-            ClientCredentials clientCredentials = clientCredentialsRequest.execute();
-            spotifyApi.setAccessToken(clientCredentials.getAccessToken());
-
+            rebuildSpotifyApi();
+            setAccessToken();
         } catch (IOException | SpotifyWebApiException | ParseException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
+
+    private void rebuildSpotifyApi() throws URISyntaxException {
+        spotifyApi = new SpotifyApi.Builder()
+                .setClientId(clientId)
+                .setClientSecret(clientSecret)
+                .setRedirectUri(new URI("http://mytracker.co"))
+                .build();
+    }
+
+    private void setAccessToken() throws IOException, SpotifyWebApiException, ParseException {
+        ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials().build();
+        ClientCredentials clientCredentials = clientCredentialsRequest.execute();
+        spotifyApi.setAccessToken(clientCredentials.getAccessToken());
+    }
+    
 }
