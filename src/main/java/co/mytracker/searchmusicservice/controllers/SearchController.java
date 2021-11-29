@@ -1,5 +1,6 @@
 package co.mytracker.searchmusicservice.controllers;
 
+import co.mytracker.searchmusicservice.dtos.RequestDto;
 import co.mytracker.searchmusicservice.models.Album;
 import co.mytracker.searchmusicservice.models.Artist;
 import co.mytracker.searchmusicservice.services.SearchService;
@@ -12,25 +13,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/search")
 public class SearchController {
 
-    private static final String ARTIST_NAME = "artistName";
-
     @Autowired
     private SearchService searchService;
 
     @GetMapping("/artists")
-    public ResponseEntity<List<Artist>> searchArtists(@RequestBody Map<String, String> searchQuery) {
-        return new ResponseEntity<>(searchService.searchArtists(searchQuery.get(ARTIST_NAME)), HttpStatus.OK);
+    public ResponseEntity<List<Artist>> searchArtists(@RequestBody RequestDto request) {
+        return new ResponseEntity<>(searchService.searchArtists(request.getArtistName()), HttpStatus.OK);
     }
 
     @GetMapping("/albums")
-    public ResponseEntity<List<Album>> searchAlbums(@RequestBody Map<String, String> searchQuery) {
-        return new ResponseEntity<>(searchService.searchAlbums(searchQuery.get(ARTIST_NAME)), HttpStatus.OK);
+    public ResponseEntity<List<Album>> searchAlbums(@RequestBody RequestDto request) {
+        return new ResponseEntity<>(searchService.searchAlbums(request.getArtistName()), HttpStatus.OK);
     }
 
 }
