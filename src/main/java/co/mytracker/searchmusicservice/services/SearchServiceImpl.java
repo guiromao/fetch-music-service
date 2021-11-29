@@ -74,12 +74,18 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
+    /**
+     * Fetching albums that have been released within the last 30 days
+     * @param albums albums retrieved from the Spotify API
+     * @return recent albums
+     */
     private List<Album> fetchRecentAlbums(List<Album> albums) {
         return albums.stream()
                 .filter(album -> LocalDate.now().minusDays(THIRTY_DAYS).isBefore(DateUtils.localDateOf(album.getReleaseDate())))
                 .collect(Collectors.toList());
     }
 
+    //Getting a new access token for Spotify API requests
     private void refreshSpotifyApi() {
         try {
             spotifyApi = new SpotifyApi.Builder()
