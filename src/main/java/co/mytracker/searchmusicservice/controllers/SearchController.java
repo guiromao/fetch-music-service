@@ -18,17 +18,19 @@ import java.util.Map;
 @RequestMapping("/api/v1/search")
 public class SearchController {
 
+    private static final String ARTIST_NAME = "artistName";
+
     @Autowired
     private SearchService searchService;
 
     @GetMapping("/artists")
     public ResponseEntity<List<Artist>> searchArtists(@RequestBody Map<String, String> searchQuery) {
-        return new ResponseEntity<>(searchService.searchArtists(searchQuery.get("artistName")), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.searchArtists(searchQuery.get(ARTIST_NAME)), HttpStatus.OK);
     }
 
     @GetMapping("/albums")
     public ResponseEntity<List<Album>> searchAlbums(@RequestBody Map<String, String> searchQuery) {
-        return new ResponseEntity<>(searchService.searchAlbums(searchQuery.get("artistName")), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.searchAlbums(searchQuery.get(ARTIST_NAME)), HttpStatus.OK);
     }
 
 }
