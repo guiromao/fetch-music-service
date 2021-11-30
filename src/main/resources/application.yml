@@ -1,0 +1,11 @@
+server:
+  port: 9091
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9999/mytracker/search-engine
+
+spring:
+  application:
+    name: client-of-eureka
